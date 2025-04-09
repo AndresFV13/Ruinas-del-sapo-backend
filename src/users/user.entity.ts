@@ -2,13 +2,13 @@ import { Rol } from "src/rol/rol.entity";
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     name: string;
 
     @Column({ unique: true })
@@ -16,6 +16,9 @@ export class User {
 
     @Column()
     password: string;
+
+    @Column()
+    authStrategy: string;
 
     @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
