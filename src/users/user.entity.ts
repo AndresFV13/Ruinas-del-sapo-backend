@@ -1,3 +1,4 @@
+import { Reservations } from "src/reservations/reservations.entity";
 import { Rol } from "src/rol/rol.entity";
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -37,5 +38,8 @@ export class User {
     })
     @ManyToMany(() => Rol, (rol) => rol.users)
     roles: Rol[];
+
+    @ManyToMany(() => Reservations, reservations => reservations.user)
+    reservations: Reservations[];
 
 }

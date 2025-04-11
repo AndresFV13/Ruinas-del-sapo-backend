@@ -5,6 +5,10 @@ import { UsersModule } from './users/users.module';
 import { RolModule } from './rol/rol.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlacesService } from './places/places.service';
+import { BlogController } from './blog/blog.controller';
+import { BlogModule } from './blog/blog.module';
+import { ReservationsController } from './reservations/reservations.controller';
+import { ReservationsModule } from './reservations/reservations.module';
 
 @Module({
   imports: [
@@ -19,9 +23,9 @@ import { PlacesService } from './places/places.service';
       synchronize: true
     }),
     UsersModule, 
-    RolModule
+    RolModule, BlogModule, ReservationsModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, BlogController, ReservationsController],
   providers: [AppService, PlacesService],
 })
 export class AppModule {}
