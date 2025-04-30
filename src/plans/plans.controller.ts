@@ -10,8 +10,8 @@ import {
   } from '@nestjs/common';
   import { PlansService } from './plans.service';
 import { Plan } from './entities/plans.entity';
-import { CreatePlanDto } from './dto/create-plans.dto';
-import { UpdatePlanDto } from './dto/update-plans.dto';
+import { CreatePlanDto } from './dto/create-plan.dto';
+import { UpdatePlanDto } from './dto/update-plan.dto';
   
   @Controller('plans')
   export class PlansController {
