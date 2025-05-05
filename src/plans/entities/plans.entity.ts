@@ -1,45 +1,54 @@
 import { Place } from 'src/places/entities/places.entity';
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    UpdateDateColumn,
-    ManyToOne,
-    JoinColumn,
-  } from 'typeorm';
-  
-  @Entity('plans')
-  export class Plan {
-    @PrimaryGeneratedColumn()
-    id: number;
-  
-    @Column({ name: 'places_id' })
-    placeId: number;
-  
-    @ManyToOne(() => Place, (place) => place.plans, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'places_id' })
-    place: Place;
-  
-    @Column()
-    name: string;
-  
-    @Column({ type: 'timestamp', name: 'availability_start_date' })
-    availabilityStartDate: Date;
-  
-    @Column({ type: 'timestamp', name: 'availability_end_date' })
-    availabilityEndDate: Date;
-  
-    @Column({ type: 'int', nullable: true })
-    maxParticipants?: number;
-  
-    @Column({ type: 'int' })
-    price: number;
-  
-    @CreateDateColumn({ name: 'created_at' })
-    createdAt: Date;
-  
-    @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt: Date;
-  }
-  
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+
+@Entity('plans')
+export class Plan {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToMany(() => Place, (place) => place.plans, {
+    cascade: true,          
+    onDelete: 'CASCADE',
+  })
+  @JoinTable({
+    name: 'plans_places',     
+    joinColumn: {
+      name: 'plan_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'place_id',
+      referencedColumnName: 'id',
+    },
+  })
+  places: Place[];          
+
+  @Column({ length: 100 })
+  title: string;
+
+  @Column('text')
+  description: string;
+
+  @Column({ nullable: true })
+  image: string;
+
+  @Column('simple-array', { nullable: true })
+  additional: string[];
+
+  @Column({ type: 'int' })
+  price: number;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+}

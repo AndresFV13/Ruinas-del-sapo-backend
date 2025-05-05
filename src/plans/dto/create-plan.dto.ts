@@ -1,24 +1,46 @@
-// src/plans/dto/create-plan.dto.ts
-import { IsString, IsNotEmpty, IsInt, IsDateString, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsInt,
+  Min,
+  IsOptional,
+  IsArray,
+  ArrayNotEmpty,
+  IsDateString,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreatePlanDto {
-  @IsInt()
-  readonly placeId: number;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsInt({ each: true })
+  @Type(() => Number)
+  placeIds: number[];     
 
-  @IsString()
-  @IsNotEmpty()
-  readonly name: string;
+  @IsString() @IsNotEmpty()
+  title: string;
+
+  @IsString() @IsNotEmpty()
+  description: string;
+
+  @IsString() @IsOptional()
+  image?: string;
+
+  @IsArray() @IsOptional()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  additional?: string[];
 
   @IsDateString()
-  readonly availabilityStartDate: string;
+  availabilityStartDate: string;
 
   @IsDateString()
-  readonly availabilityEndDate: string;
+  availabilityEndDate: string;
 
-  @IsInt()
-  @IsOptional()
-  readonly maxParticipants?: number;
+  @IsInt() @Type(() => Number)
+  @IsOptional() @Min(1)
+  maxParticipants?: number;
 
-  @IsInt()
-  readonly price: number;
+  @IsInt() @Type(() => Number) @Min(0)
+  price: number;
 }
