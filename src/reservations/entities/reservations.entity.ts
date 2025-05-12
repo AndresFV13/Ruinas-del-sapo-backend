@@ -1,44 +1,46 @@
-import { Place } from 'src/places/entities/places.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    UpdateDateColumn,
-    ManyToOne,
-    JoinColumn,
-  } from 'typeorm';
-  
-  @Entity('reservations')
-  export class Reservation {
-    @PrimaryGeneratedColumn()
-    id: number;
-  
-    @Column({ name: 'user_id' })
-    userId: number;
-  
-    @ManyToOne(() => User, (user) => user.reservations, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'user_id' })
-    user: User;
-  
-    @Column({ type: 'int' })
-    days: number;
-  
-    @Column({ name: 'places_id' })
-    placeId: number;
-  
-    @ManyToOne(() => Place, (place) => place.reservations, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'places_id' })
-    place: Place;
-  
-    @Column({ type: 'int', nullable: true })
-    room?: number; 
-  
-    @CreateDateColumn({ name: 'created_at' })
-    createdAt: Date;
-  
-    @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt: Date;
-  }
-  
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+@Entity('reservations')
+export class Reservation {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ name: 'first_name', length: 100 })
+  firstName: string;
+
+  @Column({ name: 'last_name', length: 100 })
+  lastName: string;
+
+  @Column({ unique: true, length: 200 })
+  email: string;
+
+  @Column({ name: 'phone', length: 20 })
+  phone: string;
+
+  @Column({ name: 'reservation_date'})
+  reservationDate: Date;
+
+  @Column({ default: false })
+  confirmed: boolean;
+
+  @Column({ name: 'plan_id', type: 'int' })
+  planId: number;
+
+  @Column({ name: 'plan_price', type: 'decimal', precision: 10, scale: 2 })
+  planPrice: number;
+
+  @Column({ name: 'adults', type: 'int', default: 0 })
+  adults: number;
+
+  @CreateDateColumn({ name: 'created_at'})
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at'})
+  updatedAt: Date;
+}

@@ -27,9 +27,6 @@ export class Place {
   @ManyToMany(() => Plan, (plan) => plan.places)
   plans: Plan[]; 
 
-  @OneToMany(() => Reservation, (reservation) => reservation.place)
-  reservations: Reservation[];  
-
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;  
 

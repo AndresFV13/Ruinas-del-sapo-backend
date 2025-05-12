@@ -33,9 +33,6 @@ import {
     @JoinColumn({ name: 'role_id' })
     role: Role;
   
-    @OneToMany(() => Reservation, (reservation) => reservation.user)
-    reservations: Reservation[];
-  
     @OneToMany(() => Billing, (billing) => billing.user)
     billings: Billing[];
   

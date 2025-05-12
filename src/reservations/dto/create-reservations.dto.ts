@@ -1,17 +1,33 @@
-import { IsInt, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsEmail, IsBoolean, IsInt, IsDateString, Min, Max } from 'class-validator';
 
 export class CreateReservationDto {
-  @IsInt()
-  readonly userId: number;
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  phone: string;
+
+  @IsDateString()
+  reservationDate: string;
+
+  @IsBoolean()
+  confirmed: boolean;
 
   @IsInt()
-  @IsNotEmpty()
-  readonly days: number;
+  planId: number;
 
   @IsInt()
-  readonly placeId: number;
+  @Min(0)
+  planPrice: number;
 
   @IsInt()
-  @IsOptional()
-  readonly room?: number;
+  @Min(0)
+  @Max(5)
+  adults: number;
 }
