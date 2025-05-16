@@ -1,20 +1,24 @@
-// src/blog/dto/create-blog.dto.ts
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, MaxLength, IsUrl } from 'class-validator';
 
 export class CreateBlogDto {
   @IsString()
   @IsNotEmpty()
-  readonly title: string;
+  @MaxLength(200)
+  title: string;
 
   @IsString()
-  @IsOptional()
-  readonly content?: string;
+  @IsNotEmpty()
+  description: string;
 
   @IsString()
-  @IsOptional()
-  readonly image?: string;
+  @IsNotEmpty()
+  body: string;
 
-  @IsString()
   @IsOptional()
-  readonly status?: string;
+  @IsUrl()
+  image?: string;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
 }
