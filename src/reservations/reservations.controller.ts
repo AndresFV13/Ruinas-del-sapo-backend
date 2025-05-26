@@ -8,7 +8,7 @@ import {
     Delete,
     ParseIntPipe,
   } from '@nestjs/common';
-  import { ReservationsService } from './reservations.service';
+import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservations.dto';
 import { UpdateReservationDto } from './dto/update-reservations.dto';
   

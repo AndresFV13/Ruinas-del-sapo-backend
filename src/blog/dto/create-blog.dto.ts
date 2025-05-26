@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, MaxLength, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, MaxLength, IsUrl, IsArray } from 'class-validator';
 
 export class CreateBlogDto {
   @IsString()
@@ -15,10 +15,15 @@ export class CreateBlogDto {
   body: string;
 
   @IsOptional()
-  @IsUrl()
-  image?: string;
+  @IsArray()
+  @IsUrl({}, { each: true })
+  images?: string[];
 
   @IsOptional()
   @IsString()
   status?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  category: string;
 }
