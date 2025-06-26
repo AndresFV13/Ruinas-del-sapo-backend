@@ -1,27 +1,40 @@
 import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    ParseIntPipe,
-  } from '@nestjs/common';
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/crate-places.dto';
 import { Place } from './entities/places.entity';
 import { UpdatePlaceDto } from './dto/update-places.dto';
+import { storage } from '../utils/multer-config';
+
 
   @Controller('places')
   export class PlacesController {
     constructor(private readonly placesService: PlacesService) {}
   
     @Post()
-    create(@Body() createPlaceDto: CreatePlaceDto): Promise<Place> {
+    @UseInterceptors(FileInterceptor('image', { storage}))
+    create(
+      @UploadedFile() file: Express.Multer.File,
+      @Body() createPlaceDto: CreatePlaceDto,
+    ): Promise<Place> {
+      if (file) {
+        createPlaceDto.image = `/uploads/places/${file.filename}`;
+      }
       return this.placesService.create(createPlaceDto);
     }
-  
+
     @Get()
     findAll(): Promise<Place[]> {
       return this.placesService.findAll();
@@ -33,10 +46,15 @@ import { UpdatePlaceDto } from './dto/update-places.dto';
     }
   
     @Patch(':id')
+    @UseInterceptors(FileInterceptor('image', { storage }))
     update(
       @Param('id', ParseIntPipe) id: number,
+      @UploadedFile() file: Express.Multer.File,
       @Body() updatePlaceDto: UpdatePlaceDto,
     ): Promise<Place> {
+      if (file) {
+        updatePlaceDto.image = `/uploads/places/${file.filename}`;
+      }
       return this.placesService.update(id, updatePlaceDto);
     }
   

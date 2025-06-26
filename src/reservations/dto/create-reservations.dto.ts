@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsBoolean, IsInt, IsDateString, Min, Max } from 'class-validator';
+import { IsString, IsEmail, IsDateString, IsBoolean, IsInt, Min, Max, IsOptional, IsIn } from 'class-validator';
 
 export class CreateReservationDto {
   @IsString()
@@ -30,4 +30,8 @@ export class CreateReservationDto {
   @Min(0)
   @Max(5)
   adults: number;
+
+  @IsOptional()
+  @IsIn(['active', 'cancelled', 'completed'])
+  status?: 'active' | 'cancelled' | 'completed';
 }

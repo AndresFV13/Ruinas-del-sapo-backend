@@ -1,12 +1,12 @@
 import {
-  IsNotEmpty,
-  IsString,
-  IsInt,
-  Min,
-  IsOptional,
   IsArray,
   ArrayNotEmpty,
+  IsInt,
+  IsString,
+  IsNotEmpty,
+  IsOptional,
   IsDateString,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -15,32 +15,42 @@ export class CreatePlanDto {
   @ArrayNotEmpty()
   @IsInt({ each: true })
   @Type(() => Number)
-  placeIds: number[];     
+  placeIds: number[];
 
-  @IsString() @IsNotEmpty()
+  @IsString()
+  @IsNotEmpty()
   title: string;
 
-  @IsString() @IsNotEmpty()
+  @IsString()
+  @IsNotEmpty()
   description: string;
 
-  @IsString() @IsOptional()
+  @IsString()
+  @IsOptional()
   image?: string;
 
-  @IsArray() @IsOptional()
+  @IsArray()
+  @IsOptional()
   @ArrayNotEmpty()
   @IsString({ each: true })
   additional?: string[];
 
   @IsDateString()
+   @IsOptional()   
   availabilityStartDate: string;
 
   @IsDateString()
+   @IsOptional()   
   availabilityEndDate: string;
 
-  @IsInt() @Type(() => Number)
-  @IsOptional() @Min(1)
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  @Min(1)
   maxParticipants?: number;
 
-  @IsInt() @Type(() => Number) @Min(0)
+  @IsInt()
+  @Type(() => Number)
+  @Min(0)
   price: number;
 }

@@ -23,7 +23,7 @@ export class Reservation {
   @Column({ name: 'phone', length: 20 })
   phone: string;
 
-  @Column({ name: 'reservation_date'})
+  @Column({ name: 'reservation_date' })
   reservationDate: Date;
 
   @Column({ default: false })
@@ -38,9 +38,13 @@ export class Reservation {
   @Column({ name: 'adults', type: 'int', default: 0 })
   adults: number;
 
-  @CreateDateColumn({ name: 'created_at'})
+  @Column({ type: 'varchar', default: 'active' })
+  status: 'active' | 'cancelled' | 'completed';
+
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at'})
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
+

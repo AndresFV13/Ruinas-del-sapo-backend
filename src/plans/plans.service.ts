@@ -16,18 +16,23 @@ export class PlansService {
   ) {}
 
   async create(createPlanDto: CreatePlanDto): Promise<Plan> {
-    const places = await this.placeRepository.find({
-      where: { id: In(createPlanDto.placeIds) },
-    });
-    if (places.length !== createPlanDto.placeIds.length) {
-      throw new NotFoundException(`One or more places not found`);
+    const now = new Date();
+    if (!createPlanDto.availabilityStartDate) {
+      createPlanDto.availabilityStartDate = now.toISOString();
     }
+    if (!createPlanDto.availabilityEndDate) {
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      createPlanDto.availabilityEndDate = tomorrow.toISOString();
+    }
+
+    const places = await this.placeRepository.find({ where: { id: In(createPlanDto.placeIds) } });
 
     const plan = this.planRepository.create({
       ...createPlanDto,
       places,
     });
-    return this.planRepository.save(plan);                
+    return this.planRepository.save(plan);
   }
 
   findAll(): Promise<Plan[]> {

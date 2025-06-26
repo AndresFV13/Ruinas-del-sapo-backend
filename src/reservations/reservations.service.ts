@@ -41,4 +41,10 @@ export class ReservationsService {
   remove(id: number): Promise<void> {
     return this.reservationRepo.delete(id).then(() => undefined);
   }
+
+  async cancel(id: number): Promise<Reservation> {
+    const reservation = await this.findOne(id);
+    reservation.status = 'cancelled';
+    return this.reservationRepo.save(reservation);
+  }
 }

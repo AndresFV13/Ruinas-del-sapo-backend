@@ -1,4 +1,3 @@
-// src/places/dto/create-place.dto.ts
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreatePlaceDto {
@@ -8,7 +7,7 @@ export class CreatePlaceDto {
 
   @IsString()
   @IsOptional()
-  readonly image?: string;
+  image?: string;
 
   @IsString()
   @IsOptional()
