@@ -13,6 +13,8 @@ import { PlansModule } from './plans/plans.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { BlogModule } from './blog/blog.module';
 import { BillingModule } from './billing/billing.module';
+import { CalendarEventModule } from './calendar/calendar.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { BillingModule } from './billing/billing.module';
     ReservationsModule,
     BlogModule,
     BillingModule,
+    CalendarEventModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
