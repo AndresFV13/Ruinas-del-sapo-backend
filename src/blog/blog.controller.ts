@@ -14,8 +14,8 @@ import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Blog } from './entities/blog.entity';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { storage } from '../utils/multer-config';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { cloudinaryStorage } from '../cloudinary/cloudinary.storage';
 
 @Controller('blogs')
 export class BlogController {
@@ -27,7 +27,7 @@ export class BlogController {
   }
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images', 10, { storage })) 
+  @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
   create(
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createDto: CreateBlogDto,
@@ -49,7 +49,7 @@ export class BlogController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images', 10, { storage }))
+  @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
   update(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFiles() files: Express.Multer.File[],

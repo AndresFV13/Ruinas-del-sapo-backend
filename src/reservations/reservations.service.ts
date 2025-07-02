@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Reservation } from './entities/reservations.entity';
 import { CreateReservationDto } from './dto/create-reservations.dto';
 import { UpdateReservationDto } from './dto/update-reservations.dto';
@@ -10,6 +10,7 @@ export class ReservationsService {
   constructor(
     @InjectRepository(Reservation)
     private readonly reservationRepo: Repository<Reservation>,
+    private readonly entityManager: EntityManager,
   ) {}
 
   create(createReservationDto: CreateReservationDto): Promise<Reservation> {
@@ -46,5 +47,76 @@ export class ReservationsService {
     const reservation = await this.findOne(id);
     reservation.status = 'cancelled';
     return this.reservationRepo.save(reservation);
+  }
+
+  async countMonthlyReservations(): Promise<number[]> {
+    const results = await this.reservationRepo
+      .createQueryBuilder("reservation")
+      .select("MONTH(reservation.reservationDate)", "month")
+      .addSelect("COUNT(*)", "count")
+      .where("reservation.status != :status", { status: "cancelled" })
+      .groupBy("month")
+      .orderBy("month", "ASC")
+      .getRawMany();
+
+    const months = Array(12).fill(0);
+
+    results.forEach((row) => {
+      const index = parseInt(row.month, 10) - 1;
+      months[index] = parseInt(row.count, 10);
+    });
+
+    return months;
+  }
+
+  async getMonthlyStats(): Promise<{
+    monthTotal: number;
+    todayTotal: number;
+  }> {
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const todayStart = new Date(now.setHours(0, 0, 0, 0));
+    const todayEnd = new Date(now.setHours(23, 59, 59, 999));
+
+    const monthTotalResult = await this.reservationRepo
+      .createQueryBuilder('reservation')
+      .select('SUM(reservation.planPrice)', 'total')
+      .where('reservation.status != :status', { status: 'cancelled' })
+      .andWhere('reservation.reservationDate >= :start', { start: firstDayOfMonth })
+      .getRawOne();
+
+    const todayTotalResult = await this.reservationRepo
+      .createQueryBuilder('reservation')
+      .select('SUM(reservation.planPrice)', 'total')
+      .where('reservation.status != :status', { status: 'cancelled' })
+      .andWhere('reservation.reservationDate BETWEEN :start AND :end', {
+        start: todayStart,
+        end: todayEnd,
+      })
+      .getRawOne();
+
+    return {
+      monthTotal: parseInt(monthTotalResult.total ?? '0', 10),
+      todayTotal: parseInt(todayTotalResult.total ?? '0', 10),
+    };
+  }
+
+  async sumMonthlyIncome(): Promise<number[]> {
+    const results = await this.reservationRepo
+      .createQueryBuilder("reservation")
+      .select("MONTH(reservation.reservationDate)", "month")
+      .addSelect("SUM(reservation.planPrice)", "total")
+      .where("reservation.status != :status", { status: "cancelled" })
+      .groupBy("month")
+      .orderBy("month", "ASC")
+      .getRawMany();
+
+    const months = Array(12).fill(0);
+    results.forEach(row => {
+      const index = parseInt(row.month, 10) - 1;
+      months[index] = parseInt(row.total, 10);
+    });
+
+    return months;
   }
 }

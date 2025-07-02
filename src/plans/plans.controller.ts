@@ -16,22 +16,14 @@ import { PlansService } from './plans.service';
 import { Plan } from './entities/plans.entity';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
-
-const storage = diskStorage({
-  destination: './uploads/plans',
-  filename: (_req, file, cb) => {
-    const ext = file.originalname.split('.').pop();
-    const filename = `${Date.now()}.${ext}`;
-    cb(null, filename);
-  },
-});
+import { cloudinaryStorage } from 'src/cloudinary/cloudinary.storage';
 
 @Controller('plans')
 export class PlansController {
   constructor(private readonly plansService: PlansService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage }))
+  @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
   async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() body: any,
@@ -85,7 +77,7 @@ export class PlansController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image', { storage }))
+  @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file: Express.Multer.File,

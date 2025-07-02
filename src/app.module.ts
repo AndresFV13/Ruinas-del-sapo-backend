@@ -1,4 +1,3 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -17,10 +16,16 @@ import { CalendarEventModule } from './calendar/calendar.module';
 import { AuthModule } from './auth/auth.module';
 import { StatsService } from './stats/stats.service';
 import { StatsModule } from './stats/stats.module';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CloudinaryController } from './cloudinary/cloudinary.controller';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    // Sirve estáticos los archivos de uploads bajo /uploads
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
@@ -47,9 +52,10 @@ import { StatsModule } from './stats/stats.module';
     BillingModule,
     CalendarEventModule,
     AuthModule,
-    StatsModule
+    StatsModule,
+    CloudinaryModule
   ],
-  controllers: [AppController],
-  providers: [AppService, StatsService],
+  controllers: [AppController, CloudinaryController],
+  providers: [AppService, StatsService, CloudinaryService],
 })
 export class AppModule {}

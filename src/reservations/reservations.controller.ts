@@ -27,6 +27,24 @@ export class ReservationsController {
     return this.reservationsService.findAll();
   }
 
+  @Get('monthly-income')
+  async getMonthlyIncome() {
+    const income = await this.reservationsService.sumMonthlyIncome();
+    return { data: income };
+  }
+
+  @Get('monthly-goal')
+  async getMonthlyStats() {
+    const data = await this.reservationsService.getMonthlyStats();
+    return { data };
+  }
+
+  @Get('monthly-summary')
+  async getMonthlyReservations() {
+    const monthly = await this.reservationsService.countMonthlyReservations();
+    return { data: monthly };
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.reservationsService.findOne(id);

@@ -11,12 +11,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/crate-places.dto';
 import { Place } from './entities/places.entity';
 import { UpdatePlaceDto } from './dto/update-places.dto';
-import { storage } from '../utils/multer-config';
+import { cloudinaryStorage } from '../cloudinary/cloudinary.storage';
 
 
   @Controller('places')
@@ -24,13 +23,13 @@ import { storage } from '../utils/multer-config';
     constructor(private readonly placesService: PlacesService) {}
   
     @Post()
-    @UseInterceptors(FileInterceptor('image', { storage}))
-    create(
+    @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
+    async create(
       @UploadedFile() file: Express.Multer.File,
       @Body() createPlaceDto: CreatePlaceDto,
     ): Promise<Place> {
       if (file) {
-        createPlaceDto.image = `/uploads/places/${file.filename}`;
+        createPlaceDto.image = file.path; 
       }
       return this.placesService.create(createPlaceDto);
     }
@@ -46,7 +45,7 @@ import { storage } from '../utils/multer-config';
     }
   
     @Patch(':id')
-    @UseInterceptors(FileInterceptor('image', { storage }))
+    @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
     update(
       @Param('id', ParseIntPipe) id: number,
       @UploadedFile() file: Express.Multer.File,
