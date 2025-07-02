@@ -20,6 +20,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryController } from './cloudinary/cloudinary.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ConfigModule } from '@nestjs/config';
+import { AppGateway } from './socketIO/app.getway';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { ConfigModule } from '@nestjs/config';
     CloudinaryModule
   ],
   controllers: [AppController, CloudinaryController],
-  providers: [AppService, StatsService, CloudinaryService],
+  providers: [AppService, StatsService, CloudinaryService, AppGateway],
+  exports: [AppGateway]
 })
 export class AppModule {}

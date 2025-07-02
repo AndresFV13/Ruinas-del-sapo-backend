@@ -52,7 +52,7 @@ import { cloudinaryStorage } from '../cloudinary/cloudinary.storage';
       @Body() updatePlaceDto: UpdatePlaceDto,
     ): Promise<Place> {
       if (file) {
-        updatePlaceDto.image = `/uploads/places/${file.filename}`;
+        updatePlaceDto.image = file.path;
       }
       return this.placesService.update(id, updatePlaceDto);
     }

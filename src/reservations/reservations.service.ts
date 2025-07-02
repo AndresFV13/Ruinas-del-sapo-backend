@@ -4,6 +4,7 @@ import { EntityManager, Repository } from 'typeorm';
 import { Reservation } from './entities/reservations.entity';
 import { CreateReservationDto } from './dto/create-reservations.dto';
 import { UpdateReservationDto } from './dto/update-reservations.dto';
+import { AppGateway } from 'src/socketIO/app.getway';
 
 @Injectable()
 export class ReservationsService {
@@ -11,11 +12,16 @@ export class ReservationsService {
     @InjectRepository(Reservation)
     private readonly reservationRepo: Repository<Reservation>,
     private readonly entityManager: EntityManager,
+    private readonly appGateway: AppGateway,
   ) {}
 
-  create(createReservationDto: CreateReservationDto): Promise<Reservation> {
+  async create(createReservationDto: CreateReservationDto): Promise<Reservation> {
     const reservation = this.reservationRepo.create(createReservationDto);
-    return this.reservationRepo.save(reservation);
+    const saved = await this.reservationRepo.save(reservation);
+
+    this.appGateway.sendNewReservationNotification(saved);
+
+    return saved;
   }
 
   findAll(): Promise<Reservation[]> {

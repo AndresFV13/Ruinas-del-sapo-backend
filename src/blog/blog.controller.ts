@@ -49,16 +49,14 @@ export class BlogController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
+  @UseInterceptors(FilesInterceptor('images', 10, { storage: cloudinaryStorage }))
   update(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFiles() files: Express.Multer.File[],
     @Body() updateDto: UpdateBlogDto,
   ): Promise<Blog> {
     if (files && files.length > 0) {
-      updateDto.images = files.map(
-        (file) => `/uploads/blogs/${file.filename}`,
-      );
+      updateDto.images = files.map((file) => file.path);
     }
     return this.blogService.update(id, updateDto);
   }

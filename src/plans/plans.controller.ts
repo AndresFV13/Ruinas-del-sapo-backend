@@ -11,7 +11,6 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { PlansService } from './plans.service';
 import { Plan } from './entities/plans.entity';
 import { CreatePlanDto } from './dto/create-plan.dto';
@@ -45,7 +44,6 @@ export class PlansController {
       throw new Error('Error al parsear placeIds');
     }
 
-    //Parsear additionals
     if (body.additional) {
       dto.additional = body.additional
         .split(',')
@@ -60,7 +58,7 @@ export class PlansController {
     dto.availabilityEndDate = tomorrow.toISOString();
 
     if (file) {
-      dto.image = `/uploads/plans/${file.filename}`;
+      dto.image = file.path;
     }
 
     return this.plansService.create(dto);
@@ -99,7 +97,6 @@ export class PlansController {
       console.warn('No se pudo parsear placeIds');
     }
 
-    // Parsear additional
     if (body.additional) {
       dto.additional = body.additional
         .split(',')
@@ -108,7 +105,7 @@ export class PlansController {
     }
 
     if (file) {
-      dto.image = `/uploads/plans/${file.filename}`;
+      dto.image = file.path;;
     }
 
     return this.plansService.update(id, dto);
