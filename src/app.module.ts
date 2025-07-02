@@ -15,6 +15,8 @@ import { BlogModule } from './blog/blog.module';
 import { BillingModule } from './billing/billing.module';
 import { CalendarEventModule } from './calendar/calendar.module';
 import { AuthModule } from './auth/auth.module';
+import { StatsService } from './stats/stats.service';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -44,9 +46,10 @@ import { AuthModule } from './auth/auth.module';
     BlogModule,
     BillingModule,
     CalendarEventModule,
-    AuthModule
+    AuthModule,
+    StatsModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, StatsService],
 })
 export class AppModule {}
