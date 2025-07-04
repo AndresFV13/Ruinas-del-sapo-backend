@@ -19,8 +19,8 @@ import { StatsModule } from './stats/stats.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryController } from './cloudinary/cloudinary.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { ConfigModule } from '@nestjs/config';
 import { AppGateway } from './socketIO/app.getway';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -38,10 +38,10 @@ import { AppGateway } from './socketIO/app.getway';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'password',
+      password: '',
       database: 'ruinas_del_sapo_db',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true, // En producción, usar migraciones en vez de synchronize
+      synchronize: true, 
     }),
 
     UsersModule,
