@@ -22,7 +22,10 @@ export class PlansController {
   constructor(private readonly plansService: PlansService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage: cloudinaryStorage }))
+  @UseInterceptors(FileInterceptor('image', {
+    storage: cloudinaryStorage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  }))
   async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() body: any,
@@ -33,6 +36,7 @@ export class PlansController {
     dto.description = body.description;
     dto.price = parseInt(body.price);
 
+    // Parsear placeIds
     try {
       const parsed = JSON.parse(body.placeIds);
       if (Array.isArray(parsed)) {
@@ -44,6 +48,7 @@ export class PlansController {
       throw new Error('Error al parsear placeIds');
     }
 
+    // Parsear additional
     if (body.additional) {
       dto.additional = body.additional
         .split(',')
@@ -51,14 +56,16 @@ export class PlansController {
         .filter(Boolean);
     }
 
+    // Fechas por defecto
     const now = new Date();
     dto.availabilityStartDate = now.toISOString();
     const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setDate(now.getDate() + 1);
     dto.availabilityEndDate = tomorrow.toISOString();
 
     if (file) {
-      dto.image = file.path;
+      const uploadedFile = file as any;
+      dto.image = uploadedFile?.path || uploadedFile?.secure_url || uploadedFile?.url || null;
     }
 
     return this.plansService.create(dto);
